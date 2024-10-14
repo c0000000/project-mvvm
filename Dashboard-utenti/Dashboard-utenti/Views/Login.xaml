@@ -15,7 +15,7 @@
             <TextBox x:Name="txtBoxUsername"   PlaceholderText="Inserire User" Margin="10"  />
             <PasswordBox x:Name="txtBoxPassword" PlaceholderText="Inserire Password"  Margin="10" />
             <Button Content="Login" Click="Button_Click"  ></Button>
-            <HyperlinkButton Content="Main Page" Width="128" FontWeight="Bold" FontSize="18" />
+            <HyperlinkButton Content="Registrati" Width="128" FontWeight="Bold" FontSize="18" Click="HyperlinkButton_Click" />
             <TextBlock x:Name="txtBlockMessaggio" Text="Bevenuto!!" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </StackPanel>
     </StackPanel>

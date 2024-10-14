@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dashboard_utenti.MODELS
 {
-    public class Persona
+    public class PersonaModel
     //ID - Nome - Cognome - Data-Nascita - Indirizzo - Città - CAP - Telefono
     {
         private static int IDCount = 0;
@@ -19,11 +19,11 @@ namespace Dashboard_utenti.MODELS
 
         public int CAP { get; set; }
         public string Telefono { get; set; }
-        public Persona()
+        public PersonaModel()
         {
             ID = IDCount++;
         }
-        public Persona(int ID,string name)
+        public PersonaModel(int ID,string name)
         {
             this.ID = IDCount++; ;
             this.Name = name;

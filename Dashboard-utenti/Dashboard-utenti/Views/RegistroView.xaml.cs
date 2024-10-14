@@ -1,5 +1,5 @@
 ﻿using Dashboard_utenti.Models;
-using Dashboard_utenti.Views;
+using Dashboard_utenti.Pages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
+using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -23,14 +24,14 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Dashboard_utenti.Pages
+namespace Dashboard_utenti.Views
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Login : Page
+    public sealed partial class RegistroView : Page
     {
-        public Login()
+        public RegistroView()
         {
             this.InitializeComponent();
         }
@@ -39,16 +40,17 @@ namespace Dashboard_utenti.Pages
         {
             string username = txtBoxUsername.Text;
             string password = txtBoxPassword.Password;
-
-            UserModel ueserLogin = new UserModel()
+            if (!string.IsNullOrEmpty(username) && (!string.IsNullOrEmpty(password)))
             {
-                Username = username,
-                HashPassword = GenerateHashPasword(password)
-            };
+                string hashPassword = GenerateHashPasword(password);
+                UserModel newUser = new UserModel()
+                {
+                    Username = username,
+                    HashPassword = hashPassword
+                };
 
-            if (CheckCredaintiali(ueserLogin))
-            {
-                Frame.Navigate(typeof(DashboardUtenti));
+                SalvaUser(newUser);
+                Frame.Navigate(typeof(Login));
             }
             else
             {
@@ -59,39 +61,40 @@ namespace Dashboard_utenti.Pages
             }
         }
 
-        private bool CheckCredaintiali(UserModel userLogin)
+
+        private void SalvaUser(UserModel newUser)
         {
-            StorageFile file;
-            string contenuto = "";
+
             try
             {
-                file = ApplicationData.Current.LocalFolder.GetFileAsync("credentials.json").GetAwaiter().GetResult();
+
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync("credentials.json", CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
+
+                string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
+
+
+                List<UserModel> users;
+                if (string.IsNullOrEmpty(json))
+                {
+                    users = new List<UserModel>();
+                }
+                else
+                {
+                    users = JsonConvert.DeserializeObject<List<UserModel>>(json);
+                }
+                users.Add(newUser);
+                
+                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(users));
             }
-            catch (Exception e)
+            catch (Exception e )
             {
                 Debug.WriteLine(e.Message);
-                throw e;
+                throw;
             }
-            contenuto = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
+        
 
-
-            List<UserModel> users = JsonConvert.DeserializeObject<List<UserModel>>(contenuto.ToString());
-            if(users == null)
-            {
-                return false;
-            }
-            foreach (UserModel user in users)
-            {
-                if (userLogin.HashPassword == user.HashPassword)
-                {
-                    return true;
-                }
-            }
-
-            // Stampa il contenuto
-            Debug.WriteLine("Contenuto del file: " + contenuto);
-            return false;
         }
+
         private string GenerateHashPasword(string password)
         {
             string hashPassword = "";
@@ -108,7 +111,8 @@ namespace Dashboard_utenti.Pages
 
         private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(RegistroView));
+            Frame.Navigate(typeof(Login));
+
         }
     }
 }

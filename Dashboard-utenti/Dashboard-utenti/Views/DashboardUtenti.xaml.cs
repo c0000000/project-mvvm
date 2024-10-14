@@ -35,7 +35,7 @@ namespace Dashboard_utenti.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Persona p = ViewModelPeronsa.Persona;
+            PersonaModel p = ViewModelPeronsa.Persona;
             string nome = p.Name;
             string cognome = p.Cognome;
 
@@ -47,7 +47,7 @@ namespace Dashboard_utenti.Pages
             }
 
             ViewModelPeronsa.ListaPersone.Add(ViewModelPeronsa.Persona);
-            ViewModelPeronsa.Persona = new MODELS.Persona();
+            ViewModelPeronsa.Persona = new MODELS.PersonaModel();
             txtBlcokMessage.Text = "";
 
         }

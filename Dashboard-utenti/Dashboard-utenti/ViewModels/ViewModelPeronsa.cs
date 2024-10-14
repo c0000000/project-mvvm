@@ -11,10 +11,10 @@ namespace Dashboard_utenti.ViewModels
 {
     public class ViewModelPeronsa : INotifyPropertyChanged
     {
-        public Persona persona;
-        public ObservableCollection<Persona> ListaPersone { get; set; }
+        public PersonaModel persona;
+        public ObservableCollection<PersonaModel> ListaPersone { get; set; }
 
-        public Persona Persona
+        public PersonaModel Persona
         {
             get => persona;
             set
@@ -32,8 +32,8 @@ namespace Dashboard_utenti.ViewModels
         }
      
         public ViewModelPeronsa() { 
-            ListaPersone = new ObservableCollection<Persona>();
-            persona = new Persona();
+            ListaPersone = new ObservableCollection<PersonaModel>();
+            persona = new PersonaModel();
         }
 
         public int ID
