@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="Dashboard_utenti.Pages.Login"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Dashboard_utenti.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <StackPanel>
+
+            <TextBlock Text="Login" FontSize="48" Margin="0 100 0 100" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <StackPanel HorizontalAlignment="Center" Width="800" VerticalAlignment="Center" >
+            <TextBox x:Name="txtBoxUsername"   PlaceholderText="Inserire User" Margin="10"  />
+            <PasswordBox x:Name="txtBoxPassword" PlaceholderText="Inserire Password"  Margin="10" />
+            <Button Content="Login" Click="Button_Click"  ></Button>
+            <HyperlinkButton Content="Main Page" Width="128" FontWeight="Bold" FontSize="18" />
+            <TextBlock x:Name="txtBlockMessaggio" Text="Bevenuto!!" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </StackPanel>
+
+</Page>
