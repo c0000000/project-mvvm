@@ -1,12 +1,17 @@
-﻿using Dashboard_utenti.MODELS;
+﻿using Dashboard_utenti.Models;
+using Dashboard_utenti.MODELS;
 using Dashboard_utenti.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -29,6 +34,7 @@ namespace Dashboard_utenti.Pages
         public DashboardUtenti()
         {
             this.InitializeComponent();
+            RecuperaListaPersone();
             DataContext = ViewModelPeronsa;
 
         }
@@ -56,5 +62,60 @@ namespace Dashboard_utenti.Pages
         {
 
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SalvaListaPersone();
+        }
+        private void SalvaListaPersone()
+        {
+
+            try
+            {
+
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync("lista-persone.json", CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
+
+                string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
+
+
+                List<PersonaModel> persone = ViewModelPeronsa.ListaPersone.ToList();
+
+                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(persone));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                throw;
+            }
+
+
+        }
+        private void RecuperaListaPersone()
+        {
+
+            try
+            {
+
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.GetFileAsync("lista-persone.json").GetAwaiter().GetResult();
+
+                string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
+
+                List<PersonaModel> persone = JsonConvert.DeserializeObject<List<PersonaModel>>(json.ToString());
+                // Convertiamo la List in un'ObservableCollection
+                ObservableCollection<PersonaModel> observablePersone= new ObservableCollection<PersonaModel>(persone);
+
+                ViewModelPeronsa.ListaPersone = observablePersone;
+
+                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(persone));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                throw;
+            }
+
+
+        }
+
     }
 }
