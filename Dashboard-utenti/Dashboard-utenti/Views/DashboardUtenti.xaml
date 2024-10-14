@@ -112,9 +112,9 @@
 
                                 <TextBlock Text="Cognome:" VerticalAlignment="Center" Margin="5,0" Grid.Row="2" Grid.Column="0" />
                                 <TextBlock Text="{Binding Cognome}" VerticalAlignment="Center" Margin="5,0" Grid.Row="2" Grid.Column="1" />
-                                
+
                                 <TextBlock Text="Data di Nascita" VerticalAlignment="Center" Margin="10" Grid.Row="3" Grid.Column="0" />
-                                <DatePicker x:Name="userDataNascita" SelectedDate="{Binding DataNascita}"  IsEnabled="False" Margin="10" Grid.Row="3" Grid.Column="1" />
+
                             </Grid>
 
 
