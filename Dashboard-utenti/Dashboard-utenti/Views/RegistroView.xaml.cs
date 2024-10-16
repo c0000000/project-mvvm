@@ -31,10 +31,13 @@ namespace Dashboard_utenti.Views
     /// </summary>
     public sealed partial class RegistroView : Page
     {
+        private const string NAME_FILES = "credentials.json";
+
         public RegistroView()
         {
             this.InitializeComponent();
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -64,11 +67,14 @@ namespace Dashboard_utenti.Views
 
         private void SalvaUser(UserModel newUser)
         {
-
+            if (newUser == null)
+            {
+                throw new ArgumentNullException(nameof(newUser));
+            }
             try
             {
 
-                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync("credentials.json", CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync(NAME_FILES, CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
 
                 string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
 
@@ -82,16 +88,26 @@ namespace Dashboard_utenti.Views
                 {
                     users = JsonConvert.DeserializeObject<List<UserModel>>(json);
                 }
-                users.Add(newUser);
-                
-                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(users));
-            }
-            catch (Exception e )
+
+                if (!users.Any(u => u.Username == newUser.Username))
+                {
+                    users.Add(newUser);
+                    _ = FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(users));
+                }
+                else
+                {
+                    txtBlockMessaggio.Text = "Account già registrato.";
+                    txtBlockMessaggio.Foreground = new SolidColorBrush(Colors.Red);
+
+                }
+
+}
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                throw;
+
             }
-        
+
 
         }
 
@@ -103,7 +119,7 @@ namespace Dashboard_utenti.Views
 
             foreach (byte b in bytes)
             {
-                hashPassword = b.ToString("X2");
+                hashPassword += b.ToString("X2");
             }
 
             return hashPassword;

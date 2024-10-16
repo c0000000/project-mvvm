@@ -12,7 +12,7 @@ namespace Dashboard_utenti.ViewModels
     public class ViewModelPeronsa : INotifyPropertyChanged
     {
         public PersonaModel persona;
-        public ObservableCollection<PersonaModel> ListaPersone { get; set; }
+        public ObservableCollection<PersonaModel> listaPersona;
 
         public PersonaModel Persona
         {
@@ -30,9 +30,20 @@ namespace Dashboard_utenti.ViewModels
                 OnPropertyChanged(nameof(Telefono));
             }
         }
-     
-        public ViewModelPeronsa() { 
-            ListaPersone = new ObservableCollection<PersonaModel>();
+
+        public ObservableCollection<PersonaModel> ListaPersone
+        {
+            get => listaPersona;
+            set
+            {
+                listaPersona = value;
+                OnPropertyChanged(nameof(ListaPersone));
+            }
+        }
+
+        public ViewModelPeronsa() {
+           
+            listaPersona = new ObservableCollection<PersonaModel>();
             persona = new PersonaModel();
         }
 
@@ -73,8 +84,11 @@ namespace Dashboard_utenti.ViewModels
             {
                 persona.DataNascita = value;
                 OnPropertyChanged(nameof(DataNascita));
+                OnPropertyChanged(nameof(DataNascitaString));
             }
         }
+
+        public string DataNascitaString => DataNascita.ToString("dd/MM/yyyy");
 
         public string Indirizzo
         {

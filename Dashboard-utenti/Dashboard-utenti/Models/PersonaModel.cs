@@ -9,7 +9,7 @@ namespace Dashboard_utenti.MODELS
     public class PersonaModel
     //ID - Nome - Cognome - Data-Nascita - Indirizzo - Città - CAP - Telefono
     {
-        private static int IDCount = 0;
+        public static int IDCount { get; set; } = 0;
         public int ID { get; set; }
         public string Name { get; set; }
         public string Cognome { get; set; }
@@ -22,11 +22,6 @@ namespace Dashboard_utenti.MODELS
         public PersonaModel()
         {
             ID = IDCount++;
-        }
-        public PersonaModel(int ID,string name)
-        {
-            this.ID = IDCount++; ;
-            this.Name = name;
         }
     }
 }

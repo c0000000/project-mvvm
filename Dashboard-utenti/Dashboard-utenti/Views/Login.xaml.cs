@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -35,6 +36,7 @@ namespace Dashboard_utenti.Pages
             this.InitializeComponent();
         }
 
+        const string NAME_FILES = "credentials.json";
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string username = txtBoxUsername.Text;
@@ -48,7 +50,7 @@ namespace Dashboard_utenti.Pages
 
             if (CheckCredaintiali(ueserLogin))
             {
-                Frame.Navigate(typeof(DashboardUtenti));
+                Frame.Navigate(typeof(DashboardUtenti), null, new DrillInNavigationTransitionInfo());
             }
             else
             {
@@ -61,37 +63,62 @@ namespace Dashboard_utenti.Pages
 
         private bool CheckCredaintiali(UserModel userLogin)
         {
+            if (userLogin == null)
+            {
+                throw new ArgumentNullException(nameof(userLogin));
+            }
+
             StorageFile file;
-            string contenuto = "";
             try
             {
-                file = ApplicationData.Current.LocalFolder.GetFileAsync("credentials.json").GetAwaiter().GetResult();
+                file = ApplicationData.Current.LocalFolder.GetFileAsync(NAME_FILES).GetAwaiter().GetResult();
+            }
+            catch (FileNotFoundException)
+            {
+                file = ApplicationData.Current.LocalFolder.CreateFileAsync(NAME_FILES, CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                throw e;
-            }
-            contenuto = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
-
-
-            List<UserModel> users = JsonConvert.DeserializeObject<List<UserModel>>(contenuto.ToString());
-            if(users == null)
-            {
                 return false;
             }
-            foreach (UserModel user in users)
+            string contenuto = FileIO.ReadTextAsync(file).GetAwaiter().GetResult();
+
+            if (string.IsNullOrEmpty(contenuto))
             {
-                if (userLogin.HashPassword == user.HashPassword)
+                Debug.WriteLine("Contenuto del file è vuoto.");
+                return false;
+            }
+            try
+            {
+                List<UserModel> users = JsonConvert.DeserializeObject<List<UserModel>>(contenuto);
+                if (users == null || users.Count == 0)
                 {
-                    return true;
+                    Debug.WriteLine("Nessun utente trovato nel file.");
+                    return false;
+                }
+
+                foreach (UserModel user in users)
+                {
+                    if (userLogin.HashPassword == user.HashPassword)
+                    {
+                        Debug.WriteLine("Credenziali valide.");
+                        return true;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                FileIO.WriteTextAsync(file, "").GetAwaiter().GetResult();
+            }
 
-            // Stampa il contenuto
-            Debug.WriteLine("Contenuto del file: " + contenuto);
+
+            Debug.WriteLine("Credenziali non valide.");
             return false;
         }
+
+
         private string GenerateHashPasword(string password)
         {
             string hashPassword = "";
@@ -100,8 +127,9 @@ namespace Dashboard_utenti.Pages
 
             foreach (byte b in bytes)
             {
-                hashPassword = b.ToString("X2");
+                hashPassword += b.ToString("X2");
             }
+
 
             return hashPassword;
         }

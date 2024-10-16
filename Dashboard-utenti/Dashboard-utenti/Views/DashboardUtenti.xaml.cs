@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -30,6 +31,8 @@ namespace Dashboard_utenti.Pages
     /// </summary>
     public sealed partial class DashboardUtenti : Page
     {
+        private const string NAME_FILES = "lista-persone.json";
+
         private ViewModelPeronsa ViewModelPeronsa { get; set; } = new ViewModelPeronsa();
         public DashboardUtenti()
         {
@@ -69,23 +72,28 @@ namespace Dashboard_utenti.Pages
         }
         private void SalvaListaPersone()
         {
-
             try
             {
-
-                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync("lista-persone.json", CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync(NAME_FILES, CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
 
                 string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
 
-
                 List<PersonaModel> persone = ViewModelPeronsa.ListaPersone.ToList();
 
-                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(persone));
+                string jsonPersone = JsonConvert.SerializeObject(persone);
+
+                FileIO.WriteTextAsync(fileJson, jsonPersone).GetAwaiter().GetResult();
+
+                txtBlcokMessage.Text = $"Salvataggio completato nel percorso: \n{fileJson.Path}";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.White);
+
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
-                throw;
+                Debug.WriteLine($"Errore nel salvataggio del file: {e.Message}");
+                txtBlcokMessage.Text = "Errore nel salvataggio del file. Riprovare.";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.Red);
+
             }
 
 
@@ -96,26 +104,83 @@ namespace Dashboard_utenti.Pages
             try
             {
 
-                StorageFile fileJson = ApplicationData.Current.LocalFolder.GetFileAsync("lista-persone.json").GetAwaiter().GetResult();
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.CreateFileAsync(NAME_FILES, CreationCollisionOption.OpenIfExists).GetAwaiter().GetResult();
 
                 string json = FileIO.ReadTextAsync(fileJson).GetAwaiter().GetResult();
 
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
                 List<PersonaModel> persone = JsonConvert.DeserializeObject<List<PersonaModel>>(json.ToString());
-                // Convertiamo la List in un'ObservableCollection
-                ObservableCollection<PersonaModel> observablePersone= new ObservableCollection<PersonaModel>(persone);
 
-                ViewModelPeronsa.ListaPersone = observablePersone;
+                ViewModelPeronsa.ListaPersone = new ObservableCollection<PersonaModel>(persone);
 
-                FileIO.AppendTextAsync(file: fileJson, contents: JsonConvert.SerializeObject(persone));
+                if (persone.Count > 0)
+                {
+                    txtBlcokMessage.Text = $"Recupero dei dati avvenuto con successo: numero di persone recuperate:\n - numero persone: {persone.Count} .";
+
+                    int idCountMax = persone.Max(p => p.ID);
+
+                    PersonaModel.IDCount = idCountMax + 1;
+
+                }
+                else
+                {
+                    txtBlcokMessage.Text = "Recupero dei dati avvenuto con successo, ma non sono state trovate persone.";
+                }
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.White);
+
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                throw;
+                txtBlcokMessage.Text = "Errore nel recupero dei dati.\nControllare la formattazione del file JSON.";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.Red);
+
             }
 
 
         }
 
+        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModelPeronsa.Persona = new PersonaModel();
+            ViewModelPeronsa.ListaPersone = new ObservableCollection<PersonaModel> { new PersonaModel() };
+
+            Frame.Navigate(typeof(Login), null, new DrillInNavigationTransitionInfo());
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            EliminazioneListaPersoneFileJson();
+        }
+
+        private void EliminazioneListaPersoneFileJson()
+        {
+            try
+            {
+                StorageFile fileJson = ApplicationData.Current.LocalFolder.GetFileAsync(NAME_FILES).GetAwaiter().GetResult();
+
+                FileIO.WriteTextAsync(fileJson, "[]").GetAwaiter().GetResult();
+
+                txtBlcokMessage.Text = $"Cancellazione lista completato nel percorso: \n{fileJson.Path}";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.Green);
+                ViewModelPeronsa.ListaPersone = new ObservableCollection<PersonaModel>();
+                PersonaModel.IDCount = 0;
+            }
+            catch (FileNotFoundException)
+            {
+                txtBlcokMessage.Text = "Il file non è stato trovato. Assicurati che esista.";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Errore nel elimanzione dei contenuti del file: {ex.Message}");
+                txtBlcokMessage.Text = "Errore nel salvataggio del file. Riprovare.";
+                txtBlcokMessage.Foreground = new SolidColorBrush(Colors.Red);
+
+            }
+        }
     }
 }
