@@ -41,8 +41,9 @@ namespace Dashboard_utenti.ViewModels
             }
         }
 
-        public ViewModelPeronsa() {
-           
+        public ViewModelPeronsa()
+        {
+
             listaPersona = new ObservableCollection<PersonaModel>();
             persona = new PersonaModel();
         }
@@ -77,18 +78,15 @@ namespace Dashboard_utenti.ViewModels
             }
         }
 
-        public DateTime DataNascita
+        public DateTimeOffset DataNascita
         {
             get => persona.DataNascita;
             set
             {
                 persona.DataNascita = value;
                 OnPropertyChanged(nameof(DataNascita));
-                OnPropertyChanged(nameof(DataNascitaString));
             }
         }
-
-        public string DataNascitaString => DataNascita.ToString("dd/MM/yyyy");
 
         public string Indirizzo
         {

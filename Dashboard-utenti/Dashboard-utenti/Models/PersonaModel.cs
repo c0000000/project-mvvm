@@ -13,7 +13,8 @@ namespace Dashboard_utenti.MODELS
         public int ID { get; set; }
         public string Name { get; set; }
         public string Cognome { get; set; }
-        public DateTime DataNascita { get; set; }
+        public DateTimeOffset DataNascita { get; set; }
+        public string DataNascitaDisplay => DataNascita.ToString("d");
         public string Indirizzo { get; set; }
         public string Citta { get; set; }
 

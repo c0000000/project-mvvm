@@ -100,7 +100,7 @@ namespace Dashboard_utenti.Pages
 
                 foreach (UserModel user in users)
                 {
-                    if (userLogin.HashPassword == user.HashPassword)
+                    if (userLogin.Username == user.Username && userLogin.HashPassword == user.HashPassword)
                     {
                         Debug.WriteLine("Credenziali valide.");
                         return true;

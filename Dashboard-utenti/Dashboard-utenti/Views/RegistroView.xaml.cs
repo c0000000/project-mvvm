@@ -53,7 +53,6 @@ namespace Dashboard_utenti.Views
                 };
 
                 SalvaUser(newUser);
-                Frame.Navigate(typeof(Login));
             }
             else
             {
@@ -101,7 +100,11 @@ namespace Dashboard_utenti.Views
 
                 }
 
-}
+                txtBoxUsername.Text = "";
+                txtBoxPassword.Password = "";
+
+
+            }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
