@@ -50,7 +50,7 @@ namespace Dashboard_utenti.Pages
 
             if (CheckCredaintiali(ueserLogin))
             {
-                Frame.Navigate(typeof(DashboardUtenti), null, new DrillInNavigationTransitionInfo());
+                Frame.Navigate(typeof(HomePage), null, new DrillInNavigationTransitionInfo());
             }
             else
             {

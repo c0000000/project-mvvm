@@ -1,0 +1,45 @@
+﻿<Page
+    x:Class="Dashboard_utenti.Views.DashboardTodos"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Dashboard_utenti.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="List Todos" FontSize="58" HorizontalAlignment="Center"></TextBlock>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Button Click="mostraTodos">Todos</Button>
+                <Button Click="mostraComments">Comments</Button>
+            </StackPanel >
+            <ListView x:Name="TodosList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Id}"></TextBlock>
+                            <TextBlock Text="{Binding Todo}"></TextBlock>
+                            <TextBlock Text="{Binding Completed}"></TextBlock>
+                            <TextBlock Text="{Binding userId}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView x:Name="CommentsListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="{Binding Body}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding User.FullName}" FontStyle="Italic" />
+                            <TextBlock Text="{Binding Likes}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </StackPanel>
+
+</Page>

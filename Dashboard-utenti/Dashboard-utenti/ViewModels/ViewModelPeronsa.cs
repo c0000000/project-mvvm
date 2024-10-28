@@ -12,6 +12,7 @@ namespace Dashboard_utenti.ViewModels
     public class ViewModelPeronsa : INotifyPropertyChanged
     {
         public PersonaModel persona;
+        public PersonaModel personaSelected;
         public ObservableCollection<PersonaModel> listaPersona;
 
         public PersonaModel Persona
