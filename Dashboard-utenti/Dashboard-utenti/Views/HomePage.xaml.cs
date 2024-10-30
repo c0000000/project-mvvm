@@ -27,27 +27,29 @@ namespace Dashboard_utenti
         public HomePage()
         {
             this.InitializeComponent();
+            NavView.ItemInvoked += NavView_ItemInvoked;
             ContentFrame.Navigate(typeof(DashboardUtenti)); // Naviga alla pagina Home
         }
         private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            // Ottieni il tag dell'elemento selezionato
             string tag = args.InvokedItemContainer.Tag.ToString();
 
-            // Naviga alla pagina corrispondente in base al tag
             switch (tag)
             {
                 case "home":
-                    ContentFrame.Navigate(typeof(DashboardUtenti)); // Naviga alla pagina Home
+                    ContentFrame.Navigate(typeof(DashboardUtenti));
                     break;
                 case "Gestione Utenti":
-                    ContentFrame.Navigate(typeof(DashboardUtenti)); // Naviga alla pagina di gestione utenti
+                    ContentFrame.Navigate(typeof(DashboardUtenti));
                     break;
                 case "Todos":
-                    ContentFrame.Navigate(typeof(DashboardTodos)); // Naviga alla pagina Todos
+                    ContentFrame.Navigate(typeof(DashboardTodosComments));
                     break;
                 case "Logout":
-                    Frame.Navigate(typeof(Login)); // Naviga alla pagina Todos
+                    Frame.Navigate(typeof(Login));
+                    break;
+                case "Chiudi Applicazione":
+                    Application.Current.Exit();
                     break;
             }
         }

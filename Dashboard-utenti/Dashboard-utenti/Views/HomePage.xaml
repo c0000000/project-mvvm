@@ -13,8 +13,9 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Home" Icon="Home" Tag="home" />
                 <NavigationViewItem Content="Gestione Utenti" Icon="OtherUser" Tag="Gestione Utenti" />
-                <NavigationViewItem Content="Todos" Icon="Manage" Tag="Todos" />
+                <NavigationViewItem Content="Job" Icon="Manage" Tag="Todos" />
                 <NavigationViewItem Content="Logout" Icon="Remove" Tag="Logout" />
+                <NavigationViewItem Content="Chiudi Applicazione" Icon="Cancel" Tag="Chiudi Applicazione" />
             </NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" />

@@ -26,46 +26,66 @@ namespace Dashboard_utenti.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DashboardTodos : Page
+    public sealed partial class DashboardTodosComments : Page
     {
 
-        public DashboardTodos()
+        public DashboardTodosComments()
         {
             this.InitializeComponent();
             _ = GetTodosAsync();
             _ = GetCommentsAsync();
         }
 
-        private async Task GetTodosAsync()
+        private List<TodoItemModel> GetTodosAsync()
         {
             HttpClient httpClient = new HttpClient();
             string url = "https://dummyjson.com/todos";
-            TodoResponse todoResponse = await httpClient.GetFromJsonAsync<TodoResponse>(url);
-            List<TodoItemModel> todos = todoResponse.Todos;
-            TodosList.ItemsSource = todos;
+            TodoResponse todoResponse = httpClient.GetFromJsonAsync<TodoResponse>(url).GetAwaiter().GetResult();
+            return todoResponse.Todos;
 
         }
 
-        private async Task GetCommentsAsync()
+        private List<CommentModel> GetCommentsAsync()
         {
             HttpClient httpClient = new HttpClient();
             string url = "https://dummyjson.com/comments";
-            CommentResponse commentResponse = await httpClient.GetFromJsonAsync<CommentResponse>(url);
-            List<CommentModel> todos = commentResponse.Comments;
-            CommentsListView.ItemsSource = todos;
-
+            CommentResponse commentResponse = httpClient.GetFromJsonAsync<CommentResponse>(url).GetAwaiter().GetResult();
+            return commentResponse.Comments;
         }
 
-        private void mostraTodos(object sender, RoutedEventArgs e)
+        private void MostraTodos()
         {
-            CommentsListView.Visibility = Visibility.Collapsed;
             TodosList.Visibility = Visibility.Visible;
+            CommentsListView.Visibility = Visibility.Collapsed;
+            CommentsListView.ItemsSource = new List<CommentModel>();
+            TodosList.ItemsSource = GetTodosAsync();
         }
 
-        private void mostraComments(object sender, RoutedEventArgs e)
+        private void MostraComments()
         {
+
             CommentsListView.Visibility = Visibility.Visible;
             TodosList.Visibility = Visibility.Collapsed;
+            TodosList.ItemsSource = new List<TodoItemModel>();
+            CommentsListView.ItemsSource = GetCommentsAsync();
+
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton selectedRadioButton = sender as RadioButton;
+
+            if (selectedRadioButton != null)
+            {
+                if (selectedRadioButton.Content.Equals("Todos"))
+                {
+                    MostraTodos();
+                }
+                else
+                {
+                    MostraComments();
+                }
+            }
         }
     }
 }

@@ -121,8 +121,8 @@
     </Compile>
     <Compile Include="Models\CommentModel.cs" />
     <Compile Include="Models\TodoItemModel.cs" />
-    <Compile Include="Views\DashboardTodos.xaml.cs">
-      <DependentUpon>DashboardTodos.xaml</DependentUpon>
+    <Compile Include="Views\DashboardTodosComments.xaml.cs">
+      <DependentUpon>DashboardTodosComments.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -165,7 +165,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\DashboardTodos.xaml">
+    <Page Include="Views\DashboardTodosComments.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
